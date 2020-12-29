@@ -9,3 +9,5 @@ dist/
 *.egg-info
 
 data/
+visualization/
+pc_template/
