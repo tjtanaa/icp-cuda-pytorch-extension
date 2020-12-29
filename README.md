@@ -32,3 +32,45 @@ $ python ctest.py --num_points=80000
 - [x] Batch NN search (modified from [facebookresearch/pytorch3d](https://github.com/facebookresearch/pytorch3d))
 - [ ] Batch ICP
 - [ ] Use KDTree for NN search
+
+# __Experiments__
+## __Policies to check effectiveness of the template chosen__
+### Policy One
+
+1. Compare *kitti partial point cloud with full template point cloud* in the center as origin coordinate frame and align their angle (both ry = 0)
+2. Use *different scaling policies*.
+3. Record the metrics between point cloud
+4. Visually determine the closeness of registered point cloud
+
+### Policy Two
+
+1. Compare *kitti partial point cloud with partial template point cloud* in the center as origin coordinate frame and align their angle (both ry = 0)
+   * Partial template point cloud is prepared as follows:
+     1. Divide the kitti point cloud and template point cloud into voxels.
+     2. Extract the points in the template point cloud which corresponds to the voxel index in the kitti point cloud.
+2. Use *different scaling policies*.
+3. Record the metrics between point cloud
+4. Visually determine the closeness of registered point cloud
+
+## __Scaling policy__
+Assume that 
+1. the kitti target is represented by
+   * pc_kitti (point cloud of kitti)
+   * bbox_gt (x_g, y_g, z_g, w_g, l_g, h_g, ry_g)
+
+1. the template is represented by
+   * pc_template (point cloud of template)
+   * bbox_gt (x_t, y_t, z_t, w_t, l_t, h_t, ry_t)
+
+### Policy One   
+1. Use a single scale factor, s, where s = max( w_ratio, l_ratio, h_ratio ). w_ratio = w_g / w_t ; l_ratio = l_g / l_t; h_ratio = h_g / h_t
+
+ 
+   * (x_t, y_t, z_t, w_t, l_t, h_t) * s => desired template size
+
+
+2. Use 3 different scale factor for each of the directions/dimensions: w_ratio = w_g / w_t ; l_ratio = l_g / l_t; h_ratio = h_g / h_t
+ 
+   * (x_t, w_t) * w_ratio => desired template size
+   * (y_t, l_t) * l_ratio => desired template size
+   * (z_t, h_t) * h_ratio => desired template size
