@@ -22,6 +22,10 @@ def nn_search(query, ref, ratio=0.5, cur_label=None,
 def icp_pytorch(src, dst, max_iter, threshold=0.005, ratio=0.5):
     prev_dist = 0
 
+    cumR = torch.eye(3).cuda()
+    cumT = torch.zeros((1,3)).cuda()
+    prevR = torch.eye(3).cuda()
+
     for i in range(max_iter):
         # 1. Find Nearest Neighbor
         idx, dist = _C.nn_search(src.cuda(), dst.cuda())
@@ -39,11 +43,19 @@ def icp_pytorch(src, dst, max_iter, threshold=0.005, ratio=0.5):
 
         # 4. Rotation matrix and translation vector
         R = torch.mm(U, V.T)
+        cumR = torch.mm(R, cumR)
         t = dst_temp_center - torch.mm(R, src_center.unsqueeze(1)).squeeze()
 
         # 5. Transform
         src = torch.mm(src, R) + t.unsqueeze(0)
         mean_dist = dist.mean()
+
+        # accumulate the rotation and translation
+        if i > 0:
+            cumT = torch.mm(cumT, R)
+        cumT += t.unsqueeze(0)
+
+        prevR = R
         if torch.abs(mean_dist - prev_dist) < threshold:
             break
         prev_dist = mean_dist
@@ -53,7 +65,7 @@ def icp_pytorch(src, dst, max_iter, threshold=0.005, ratio=0.5):
     corres[:, 0] = torch.arange(src.size(0))
     corres[:, 1] = idx
 
-    return corres[mink].long()
+    return corres[mink].long(), cumR, cumT, src
 
 
 def batch_nn_search(query, ref, ratio=0.5, cur_label=None,

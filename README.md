@@ -52,6 +52,18 @@ $ python ctest.py --num_points=80000
 3. Record the metrics between point cloud
 4. Visually determine the closeness of registered point cloud
 
+
+### Policy Three
+
+1. Compare *kitti partial point cloud with partial template point cloud* in the center as origin coordinate frame and align their angle (both ry = 0)
+   * Partial template point cloud is prepared as follows:
+     1. Divide the kitti point cloud and template point cloud into voxels.
+     2. Extract the points in the template point cloud which corresponds to the voxel index in the kitti point cloud.
+     3. *Keep the ratio of num_template_points to num_kitti_points low*
+2. Use *different scaling policies*.
+3. Record the metrics between point cloud
+4. Visually determine the closeness of registered point cloud
+
 ## __Scaling policy__
 Assume that 
 1. the kitti target is represented by
