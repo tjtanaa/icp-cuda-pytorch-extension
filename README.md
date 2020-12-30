@@ -34,6 +34,62 @@ $ python ctest.py --num_points=80000
 - [ ] Use KDTree for NN search
 
 # __Experiments__
+## __Experiment/Test Description__
+### Experiment 0
+Try *effectiveness policy 1* and *scaling policy 1*, which are matching full template point cloud to kitti partial point cloud, and single scale factor. Visualize the output for validation purpose. Ignoring metrics at this stage.
+* Results:
+  * Very inaccurate.
+
+### Experiment 1
+Try *effectiveness policy 1* and *scaling policy 2*, which are matching full template point cloud to kitti partial point cloud, and three scale factors in different direction (x,y,z). Visualize the output for validation purpose. Ignoring metrics at this stage.
+* Results:
+  * Visually, the template point cloud shape could match the kitti point cloud.
+  * However, ICP matching is still very inaccurate. 
+  * Matching more points to fewer points are highly inaccurate
+
+### Experiment 2
+Try *effectiveness policy 2* and *scaling policy 1*, which are matching partial template point cloud to kitti partial point cloud, and single scale factor. Visualize the output for validation purpose. Ignoring metrics at this stage.
+* Results:
+  * Visually, the template point cloud shape could match the kitti point cloud.
+  * However, ICP matching is still very inaccurate. 
+  * Matching more points to fewer points are highly inaccurate
+
+
+### Experiment 3
+Try *effectiveness policy 2* and *scaling policy 2*, which are matching partial template point cloud to kitti partial point cloud, and three scale factors in different direction (x,y,z). Visualize the output for validation purpose. Ignoring metrics at this stage.
+* Results:
+  * Visually, the template point cloud shape could match the kitti point cloud.
+  * However, ICP matching is better, but still inaccurate. 
+  * Matching more points to fewer points are highly inaccurate
+
+
+### Experiment 4
+Try *effectiveness policy 3* and *scaling policy 2*, which are:
+ 1. matching partial template point cloud to kitti partial point cloud, and three scale factors in different direction (x,y,z).
+ 2. downsample the point cloud to a specified ratio, num_template_points_to_num_kitti_points. 
+ 3. Visualize the output for validation purpose. Ignoring metrics at this stage.
+* Results:
+  * Visually, the template point cloud shape could match the kitti point cloud.
+  * ICP matching is better for large point density kitti pc. 
+  * Inaccurate matching with parse visually-non-identifiable kitti pc.
+  * Matching more points to fewer points are highly inaccurate
+
+
+
+### Experiment 5 (Duplicate of Experiment 4 but with better visualization)
+Try *effectiveness policy 3* and *scaling policy 2*, which are:
+ 1. matching partial template point cloud to kitti partial point cloud, and three scale factors in different direction (x,y,z).
+ 2. downsample the point cloud to a specified ratio, num_template_points_to_num_kitti_points. 
+ 3. Visualize the output for validation purpose. Ignoring metrics at this stage.
+* Results:
+  * Visually, the template point cloud shape could match the kitti point cloud.
+  * ICP matching is better for large point density kitti pc. 
+  * Inaccurate matching with parse visually-non-identifiable kitti pc.
+  * Matching more points to fewer points are highly inaccurate
+
+* __Added feature__: Keeping track of the rotation matrix and translation matrix. Thus, the bounding box of the template after icp has been visualized in (Green). The bounding box of the target kitti pc is in (Magenta)
+
+
 ## __Policies to check effectiveness of the template chosen__
 ### Policy One
 
